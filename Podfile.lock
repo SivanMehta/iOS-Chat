@@ -2,11 +2,11 @@ PODS:
   - Socket.IO-Client-Swift (8.1.2)
 
 DEPENDENCIES:
-  - Socket.IO-Client-Swift
+  - Socket.IO-Client-Swift (~> 8.1.2)
 
 SPEC CHECKSUMS:
   Socket.IO-Client-Swift: 542d82e6708f9901b3f6c1d134fb60fa0d09d4d1
 
-PODFILE CHECKSUM: 384d71ada50dd77fa9a0fb169b5c354a810a9988
+PODFILE CHECKSUM: 283a064f1a09b51fbae24356346ea12a2a17357c
 
 COCOAPODS: 1.1.1

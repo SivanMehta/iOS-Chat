@@ -27,7 +27,7 @@ class UsersViewController: UIViewController, UITableViewDelegate, UITableViewDat
     }
 
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         if !configurationOK {
@@ -39,7 +39,7 @@ class UsersViewController: UIViewController, UITableViewDelegate, UITableViewDat
     }
     
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
     }
@@ -55,10 +55,10 @@ class UsersViewController: UIViewController, UITableViewDelegate, UITableViewDat
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let identifier = segue.identifier {
             if identifier == "idSegueJoinChat" {
-                let chatViewController = segue.destinationViewController as! ChatViewController
+                let chatViewController = segue.destination as! ChatViewController
                 chatViewController.nickname = nickname
             }
         }
@@ -83,9 +83,9 @@ class UsersViewController: UIViewController, UITableViewDelegate, UITableViewDat
     func configureTableView() {
         tblUserList.delegate = self
         tblUserList.dataSource = self
-        tblUserList.registerNib(UINib(nibName: "UserCell", bundle: nil), forCellReuseIdentifier: "idCellUser")
-        tblUserList.hidden = true
-        tblUserList.tableFooterView = UIView(frame: CGRectZero)
+        tblUserList.register(UINib(nibName: "UserCell", bundle: nil), forCellReuseIdentifier: "idCellUser")
+        tblUserList.isHidden = true
+        tblUserList.tableFooterView = UIView(frame: CGRect.zero)
     }
     
     
@@ -96,13 +96,13 @@ class UsersViewController: UIViewController, UITableViewDelegate, UITableViewDat
     }
     
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return users.count
     }
     
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("idCellUser", forIndexPath: indexPath) as! UserCell
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "idCellUser", for: indexPath) as! UserCell
         
         return cell
     }
