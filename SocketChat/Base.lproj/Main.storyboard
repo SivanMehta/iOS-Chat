@@ -55,7 +55,7 @@
                     <navigationItem key="navigationItem" id="nYy-j1-Nnv">
                         <barButtonItem key="rightBarButtonItem" title="Exit" id="XO3-TG-NYE">
                             <connections>
-                                <action selector="exitChat:" destination="zOY-nS-yMe" id="nQd-NB-cJv"/>
+                                <action selector="exitChatWithSender:" destination="zOY-nS-yMe" id="2at-Oj-sNo"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
