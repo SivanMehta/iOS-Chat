@@ -19,13 +19,18 @@ class SocketIOManager: NSObject {
     var socket: SocketIOClient = SocketIOClient(socketURL: NSURL(string: "http://127.0.0.1:3000")! as URL)
         
     func establishConnection() {
-        print("connecting...")
         socket.connect()
     }
     
-    
     func closeConnection() {
-        print("disconnecting...")
         socket.disconnect()
+    }
+    
+    func connectToServerWithNickname(nickname: String, completionHandler: @escaping (_ userList: [[String: AnyObject]]?) -> Void) {
+        socket.emit("connectUser", nickname)
+        
+        socket.on("userList") { ( dataArray, ack) -> Void in
+            completionHandler(dataArray[0] as! [[String: AnyObject]])
+        }
     }
 }
