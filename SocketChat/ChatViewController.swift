@@ -26,7 +26,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     var chatMessages = [[String: AnyObject]]()
     
-    var bannerLabelTimer: NSTimer!
+    var bannerLabelTimer: Timer!
     
     
     override func viewDidLoad() {
@@ -34,18 +34,15 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
 
         // Do any additional setup after loading the view.
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ChatViewController.handleKeyboardDidShowNotification(_:)), name: UIKeyboardDidShowNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ChatViewController.handleKeyboardDidHideNotification(_:)), name: UIKeyboardDidHideNotification, object: nil)
-        
         
         let swipeGestureRecognizer = UISwipeGestureRecognizer(target: self, action: #selector(ChatViewController.dismissKeyboard))
-        swipeGestureRecognizer.direction = UISwipeGestureRecognizerDirection.Down
+        swipeGestureRecognizer.direction = UISwipeGestureRecognizerDirection.down
         swipeGestureRecognizer.delegate = self
         view.addGestureRecognizer(swipeGestureRecognizer)
     }
 
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         configureTableView()
@@ -56,7 +53,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
     }
@@ -69,7 +66,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     
     deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
     }
 
     
@@ -96,10 +93,10 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     func configureTableView() {
         tblChat.delegate = self
         tblChat.dataSource = self
-        tblChat.registerNib(UINib(nibName: "ChatCell", bundle: nil), forCellReuseIdentifier: "idCellChat")
+        tblChat.register(UINib(nibName: "ChatCell", bundle: nil), forCellReuseIdentifier: "idCellChat")
         tblChat.estimatedRowHeight = 90.0
         tblChat.rowHeight = UITableViewAutomaticDimension
-        tblChat.tableFooterView = UIView(frame: CGRectZero)
+        tblChat.tableFooterView = UIView(frame: CGRect.zero)
     }
     
     
@@ -111,14 +108,14 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     
     func configureOtherUserActivityLabel() {
-        lblOtherUserActivityStatus.hidden = true
+        lblOtherUserActivityStatus.isHidden = true
         lblOtherUserActivityStatus.text = ""
     }
     
     
     func handleKeyboardDidShowNotification(notification: NSNotification) {
         if let userInfo = notification.userInfo {
-            if let keyboardFrame = (userInfo[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.CGRectValue() {
+            if let keyboardFrame = (userInfo[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
                 conBottomEditor.constant = keyboardFrame.size.height
                 view.layoutIfNeeded()
             }
@@ -132,24 +129,12 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     
-    func scrollToBottom() {
-        let delay = 0.1 * Double(NSEC_PER_SEC)
-        
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(delay)), dispatch_get_main_queue()) { () -> Void in
-            if self.chatMessages.count > 0 {
-                let lastRowIndexPath = NSIndexPath(forRow: self.chatMessages.count - 1, inSection: 0)
-                self.tblChat.scrollToRowAtIndexPath(lastRowIndexPath, atScrollPosition: UITableViewScrollPosition.Bottom, animated: true)
-            }
-        }
-    }
-    
-    
     func showBannerLabelAnimated() {
-        UIView.animateWithDuration(0.75, animations: { () -> Void in
+        UIView.animate(withDuration: 0.75, animations: { () -> Void in
             self.lblNewsBanner.alpha = 1.0
             
             }) { (finished) -> Void in
-                self.bannerLabelTimer = NSTimer.scheduledTimerWithTimeInterval(2.0, target: self, selector: #selector(ChatViewController.hideBannerLabel), userInfo: nil, repeats: false)
+                self.bannerLabelTimer = Timer.scheduledTimer(timeInterval: 2.0, target: self, selector: #selector(ChatViewController.hideBannerLabel), userInfo: nil, repeats: false)
         }
     }
     
@@ -160,7 +145,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
             bannerLabelTimer = nil
         }
         
-        UIView.animateWithDuration(0.75, animations: { () -> Void in
+        UIView.animate(withDuration: 0.75, animations: { () -> Void in
             self.lblNewsBanner.alpha = 0.0
             
             }) { (finished) -> Void in
@@ -170,7 +155,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     
     func dismissKeyboard() {
-        if tvMessageEditor.isFirstResponder() {
+        if tvMessageEditor.isFirstResponder {
             tvMessageEditor.resignFirstResponder()
         }
     }
@@ -184,13 +169,13 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return chatMessages.count
     }
     
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("idCellChat", forIndexPath: indexPath) as! ChatCell
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "idCellChat", for: indexPath) as! ChatCell
         
         return cell
     }
