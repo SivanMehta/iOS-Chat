@@ -16,7 +16,7 @@ class SocketIOManager: NSObject {
         super.init()
     }
     
-    var socket: SocketIOClient = SocketIOClient(socketURL: NSURL(string: "http://127.0.0.1:3000")! as URL)
+    var socket: SocketIOClient = SocketIOClient(socketURL: NSURL(string: "https://cardgamewar.herokuapp.com")! as URL)
         
     func establishConnection() {
         socket.connect()
@@ -37,5 +37,20 @@ class SocketIOManager: NSObject {
     func exitChatWithNickname(nickname: String, completionHandler: () -> Void) {
         socket.emit("exitUser", nickname)
         completionHandler()
+    }
+    
+    func getChatMessage(completionHandler: @escaping (_ messageInfo: [String: AnyObject]) -> Void) {
+        socket.on("newChatMessage") { (dataArray, socketAck) -> Void in
+            var messageDictionary = [String: AnyObject]()
+            messageDictionary["nickname"] = dataArray[0] as! String as AnyObject?
+            messageDictionary["message"] = dataArray[1] as! String as AnyObject?
+            messageDictionary["date"] = dataArray[2] as! String as AnyObject?
+            
+            completionHandler(messageDictionary)
+        }
+    }
+
+    func sendMessage(message: String, withNickname nickname: String) {
+        socket.emit("chatMessage", nickname, message)
     }
 }
