@@ -16,7 +16,7 @@ class SocketIOManager: NSObject {
         super.init()
     }
     
-    var socket: SocketIOClient = SocketIOClient(socketURL: NSURL(string: "https://cardgamewar.herokuapp.com")! as URL)
+    var socket: SocketIOClient = SocketIOClient(socketURL: NSURL(string: "http://127.0.0.1:3000")! as URL)
         
     func establishConnection() {
         socket.connect()
@@ -29,13 +29,19 @@ class SocketIOManager: NSObject {
     func connectToServerWithNickname(nickname: String, completionHandler: @escaping (_ userList: [[String: AnyObject]]?) -> Void) {
         socket.emit("connectUser", nickname)
         
+        // if we can connect we will receive the userList event
         socket.on("userList") { ( dataArray, ack) -> Void in
             completionHandler(dataArray[0] as? [[String: AnyObject]])
+        }
+        
+        // if cannot connect we will receive the denyAccess event
+        socket.on("denyAccess") { (data, ack) -> Void in
+            completionHandler(nil)
         }
     }
     
     func exitChatWithNickname(nickname: String, completionHandler: () -> Void) {
-        socket.emit("exitUser", nickname)
+        socket.emit("disconnect")
         completionHandler()
     }
     
