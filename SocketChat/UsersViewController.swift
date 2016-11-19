@@ -88,8 +88,8 @@ class UsersViewController: UIViewController, UITableViewDelegate, UITableViewDat
         navigationItem.title = "SocketChat"
     }
     
-    func askForNickname() {
-        let alertController = UIAlertController(title: "SocketChat", message: "Please enter a nickname:", preferredStyle: UIAlertControllerStyle.alert)
+    func askForNickname(message: String = "Please enter a nickname") {
+        let alertController = UIAlertController(title: "SocketChat", message: message, preferredStyle: UIAlertControllerStyle.alert)
         
         alertController.addTextField(configurationHandler: nil)
         
@@ -107,6 +107,8 @@ class UsersViewController: UIViewController, UITableViewDelegate, UITableViewDat
                             self.users = userList!
                             self.tblUserList.reloadData()
                             self.tblUserList.isHidden = false
+                        } else {
+                            self.askForNickname(message: "Only 2 players can play at once")
                         }
                     })
                 })
